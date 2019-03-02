@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui" />
+	<meta name="HandheldFriendly" content="True">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="cadetblue">
+	<meta http-equiv="cleartype" content="on">
+	
+	<title>Pattern v1.0.2</title>
+	<style>
+		html, body {
+			 padding:0px;
+			 margin:0px;
+			 position:relative;
+			 width:100%;
+			 height:100%;
+		 }
+		 body {
+		 	display:flex; 
+		 	align-items:center; 
+		 	justify-content:center;
+			background:cadetblue;
+		 }
+	</style>
+</head>
+
+<body>
+	<canvas width="300" height="300" style="margin:auto" id="canvas"></canvas>
+    <script src="assets/js/pattern.js"></script>
+	<script>
+		const canvas = document.getElementById("canvas");
+		const pattern = new lockPattern(canvas, {
+			line_width : 4,
+			size : 4,
+			min_connect : 3,
+			background_radius : 20,
+			background_radius_line_width : 4,
+			radius : 5,
+			transparency : false,
+			background_radius_color : "transparent",
+			radius_color : "#fff",
+			error_background_radius_line_color : "firebrick",
+			error_line_color : "firebrick",
+			background_radius_line_color : "#fff",
+			line_color : "#fff"
+		});
+		
+		//============Function to call when failed to make minimum connection======================
+		pattern.addEventListener("failedconnect", function(ev){
+			alert(`You have failed to connect at least ${ev.target.min_connect} dots!`);
+			setTimeout(()=>{
+				ev.target.reset()
+			}, 2000);
+		});
+		
+		//============Function to call after successfull connection======================
+		pattern.addEventListener("connect", function(ev){
+			/*
+			The connected  dots is stored in array which can be accessed using 
+			1. ev.target.selected 
+			2. this.selected
+			
+			e.g
+			*/
+			
+			let connects = ev.target.selected.join(", ");
+			alert('You connected dots: '+ connects);
+		});
+		
+		
+		//============================INITIATES PATTERN=================
+		pattern.initiate();
+		
+		//Function to call to resize the area;
+		window.onresize = function(){
+			let width = this.innerWidth;
+			let height = this.innerHeight;
+			if(width > 300){
+				width = 300;
+			}
+			if(height > 300){
+				height = 300;
+			}
+			canvas.width = width;
+			canvas.height = height;
+			//============================INITIATES RESIZE=================
+			pattern.rescale();
+		}
+	</script>
+</body>
+</html>
